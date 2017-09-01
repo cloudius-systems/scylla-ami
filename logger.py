@@ -13,6 +13,9 @@ from exceptions import SystemExit
 
 configfile = '/var/lib/scylla/ami.log'
 
+def getTime():
+    return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+
 def appendLog(text):
     with open(configfile, "a") as f:
         f.write(text + "\n")
@@ -26,15 +29,15 @@ def exe(command, log=True, expectError=False, shell=False):
     if log:
         # Print output on next line if it exists
         if len(read[0]) > 0:
-            appendLog('[EXEC] ' + time.strftime("%m/%d/%y-%H:%M:%S", time.localtime()) + ' ' + command + ":\n" + read[0])
+            appendLog('[EXEC] ' + getTime() + ' ' + command + ":\n" + read[0])
         elif len(read[1]) > 0:
             if expectError:
-                appendLog('[EXEC:E] ' + time.strftime("%m/%d/%y-%H:%M:%S", time.localtime()) + ' ' + command + ":\n" + read[1])
+                appendLog('[EXEC:E] ' + getTime() + ' ' + command + ":\n" + read[1])
             else:
-                appendLog('[ERROR] ' + time.strftime("%m/%d/%y-%H:%M:%S", time.localtime()) + ' ' + command + ":\n" + read[1])
+                appendLog('[ERROR] ' + getTime() + ' ' + command + ":\n" + read[1])
 
     if not log or (len(read[0]) == 0 and len(read[1]) == 0):
-        appendLog('[EXEC] ' + time.strftime("%m/%d/%y-%H:%M:%S", time.localtime()) + ' ' + command)
+        appendLog('[EXEC] ' + getTime() + ' ' + command)
 
     return read
 
@@ -50,40 +53,40 @@ def pipe(command1, command2, log=True):
 
     # Print output on next line if it exists
     if len(read) > 0:
-        appendLog('[PIPE] ' + time.strftime("%m/%d/%y-%H:%M:%S", time.localtime()) + ' ' + command1 + ' | ' + command2 + ":\n" + read)
+        appendLog('[PIPE] ' + getTime() + ' ' + command1 + ' | ' + command2 + ":\n" + read)
     else:
-        appendLog('[PIPE] ' + time.strftime("%m/%d/%y-%H:%M:%S", time.localtime()) + ' ' + command1 + ' | ' + command2)
+        appendLog('[PIPE] ' + getTime() + ' ' + command1 + ' | ' + command2)
 
     output = p2.communicate()[0]
 
     if log:
         if read and len(read) > 0:
-            appendLog('[PIPE] ' + time.strftime("%m/%d/%y-%H:%M:%S", time.localtime()) + ' ' + command1 + ' | ' + command2 + ":\n" + read)
+            appendLog('[PIPE] ' + getTime() + ' ' + command1 + ' | ' + command2 + ":\n" + read)
 
         if output and len(output[0]) > 0:
-            appendLog('[PIPE] ' + time.strftime("%m/%d/%y-%H:%M:%S", time.localtime()) + ' ' + command1 + ' | ' + command2 + ":\n" + output[0])
+            appendLog('[PIPE] ' + getTime() + ' ' + command1 + ' | ' + command2 + ":\n" + output[0])
         if output and len(output[1] > 0):
-            appendLog('[PIPE] ' + time.strftime("%m/%d/%y-%H:%M:%S", time.localtime()) + ' ' + command1 + ' | ' + command2 + ":\n" + output[1])
+            appendLog('[PIPE] ' + getTime() + ' ' + command1 + ' | ' + command2 + ":\n" + output[1])
 
         return output
 
 def debug(infotext):
-    appendLog('[DEBUG] ' + str(infotext))
+    appendLog('[DEBUG] ' + getTime() + ' ' + str(infotext))
 
 def info(infotext):
-    appendLog('[INFO] ' + str(infotext))
+    appendLog('[INFO] ' + getTime() + ' ' + str(infotext))
 
 def warn(infotext):
-    appendLog('[WARN] ' + str(infotext))
+    appendLog('[WARN] ' + getTime() + ' ' + str(infotext))
 
 def error(infotext):
-    appendLog('[ERROR] ' + str(infotext))
+    appendLog('[ERROR] ' + getTime() + ' ' + str(infotext))
 
 def exception(filename):
     if type(sys.exc_info()[1]) == SystemExit:
         return
 
-    appendLog("[ERROR] Exception seen in %s:" % filename)
+    appendLog("[ERROR] %s Exception seen in %s:" % (getTime(),filename))
     import traceback
     appendLog(traceback.format_exc())
     sys.exit(1)

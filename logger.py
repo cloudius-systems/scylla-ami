@@ -11,7 +11,7 @@ import time
 
 from exceptions import SystemExit
 
-configfile = '/var/lib/scylla/ami.log'
+configfile = '/etc/scylla/ami.log'
 
 def getTime():
     return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())

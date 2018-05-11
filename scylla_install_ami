@@ -117,3 +117,11 @@ if [ "$ID" = "ubuntu" ]; then
 else
     dracut --verbose --add-drivers "amzn-drivers nvme ena" --force
 fi
+
+# Add Delay to fstrim timer to prevent all machines from IO bottleneck at the same time.
+timer=/usr/lib/systemd/system/fstrim.timer
+# Ensure the file exists and doesn't already have a Delay.
+if [[ -f $timer && ! `grep 'RandomizedDelaySec' $timer` ]]; then
+  # Add the delay right below the [Timer] heading.
+  sed -i 's/\[Timer\]/\[Timer\]\nRandomizedDelaySec=7200/' $timer
+fi

@@ -432,6 +432,7 @@ def construct_yaml():
     # Set cluster_name to reservationid
     instance_data['clustername'] = instance_data['clustername'].strip("'").strip('"')
     yaml = yaml.replace("cluster_name: 'Test Cluster'", "cluster_name: '{0}'".format(instance_data['clustername']))
+    yaml = yaml.replace("#cluster_name: '{0}'".format(instance_data['clustername']), "cluster_name: '{0}'".format(instance_data['clustername']))
 
     # Set auto_bootstrap
     if options.bootstrap:

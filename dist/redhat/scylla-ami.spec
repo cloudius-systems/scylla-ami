@@ -1,13 +1,13 @@
-Name:           {{product}}-ami
-Version:        {{version}}
-Release:        {{release}}
+Name:           %{product}-ami
+Version:        %{version}
+Release:        %{release}
 Summary:        Scylla AMI
 Group:          Applications/Databases
 
 License:        AGPLv3
 URL:            http://www.scylladb.com/
-Source0:        %{name}-{{version}}-{{release}}.tar
-Requires:       {{product}} = {{version}} {{product}}-python3 curl
+Source0:        %{name}-%{version}-%{release}.tar
+Requires:       %{product} = %{version} %{product}-python3 curl
 
 BuildArch:      noarch
 
